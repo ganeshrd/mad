@@ -58,8 +58,8 @@ load(true,A,Acc,Config) ->
 % for user application we should merge app from ebin and from sys.config
 % and start application using tuple argument in app controller
 
-load(_,A,Acc,Config) ->
-    mad:info("A: ~p~n",[A]),
+load(_Debug,A,Acc,Config) ->
+    mad:info("load(~p,~p,~p,~p)",[_Debug,A,Acc,Config]),
     {application,Name,Map} = load_config(A),
     NewEnv = merge(Config,Map,Name),
     acc_start({application,Name,set_value(env,1,Map,{env,NewEnv})},Acc).
@@ -80,6 +80,7 @@ add_replace(_____,Name,Pos,List,New) -> lists:keyreplace(Name,Pos,List,New).
 cwd() -> case  file:get_cwd() of {ok, Cwd} -> Cwd; _ -> "." end.
 
 sh(Params) ->
+    mad:info("Params: ~p~n",[Params]),
     { _Cwd,_ConfigFileName,_Config } = mad_utils:configs(),
     SystemPath = filelib:wildcard(code:root_dir() ++ "/lib/{"
               ++ string:join([atom_to_list(X)||X<-mad_repl:system()],",") ++ "}-*/ebin"),
@@ -161,7 +162,10 @@ load_file(Name)  ->
 load_config(A) when is_atom(A) -> load_config(atom_to_list(A));
 load_config(A) when is_list(A) ->
     AppFile = A ++".app",
+    mad:info("AppFile: ~p~n",[AppFile]),
+    mad:info("wildcards([~p,~p]~n",["{apps,deps}/*/ebin/"++AppFile,"ebin/"++AppFile]),
     Name = wildcards(["{apps,deps}/*/ebin/"++AppFile,"ebin/"++AppFile]),
+    mad:info("Name: ~p~n",[Name]),
     case file:read_file(Name) of
          {ok,Bin} -> parse(binary_to_list(Bin));
          {error,_} -> case ets:lookup(filesystem,AppFile) of
