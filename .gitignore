@@ -5,3 +5,5 @@ logs
 .mad.plt
 deps
 .DS_Store
+*.swp
+.applist

@@ -59,6 +59,7 @@ load(true,A,Acc,Config) ->
 % and start application using tuple argument in app controller
 
 load(_,A,Acc,Config) ->
+    mad:info("A: ~p~n",[A]),
     {application,Name,Map} = load_config(A),
     NewEnv = merge(Config,Map,Name),
     acc_start({application,Name,set_value(env,1,Map,{env,NewEnv})},Acc).
