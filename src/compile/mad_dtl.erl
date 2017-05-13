@@ -50,9 +50,9 @@ compile_erlydtl_files(Opts) ->
              mad:info("DTL Compiling ~s~n", [F -- mad_utils:cwd()]),
              Res = erlydtl:compile(F, ModuleName, Opts3),
              file:change_time(BeamFile, calendar:local_time()),
-             case Res of {error,Error} -> mad:info("Error: ~p~n",[Error]);
-                                    OK -> OK end;
+             case Res of {error,Error} -> {error,Error};
+                                    OK -> ok end;
              true -> ok end
     end,
 
-    lists:any(fun({error,_}) -> true; ({ok,_}) -> false end,[Compile(F) || F <- Files]).
+    lists:any(fun({error,_}) -> true; (ok) -> false end,[Compile(F) || F <- Files]).

@@ -7,3 +7,4 @@ deps
 .DS_Store
 *.swp
 .applist
+include/mad.hrl
